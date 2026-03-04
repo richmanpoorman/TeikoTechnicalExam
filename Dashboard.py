@@ -3,6 +3,8 @@ from InitialAnalysis import initialAnalysis
 from StatisticalAnalysis import relativeFrequencies, createFigures, signficanceTest 
 from SubsetAnalysis import subsetAnalysis, melanomaMalesAvgBCellsTimeZero
 
+from sqlalchemy import URL, create_engine
+
 from dash import Dash, html, dcc
 
 from dash.html import Div, H1, H2, H3, P
@@ -16,8 +18,15 @@ from typing import Optional
 app = Dash() 
 
 # Step 1
-raw_data = importData()
-engine = createDatabase(raw_data)
+# raw_data = importData()
+# engine = createDatabase(raw_data)
+database_name = 'cell_count.db'
+
+database_url = URL.create(
+    "sqlite", 
+    database=database_name
+)
+engine = create_engine(database_url, echo=False)
 
 # Step 2
 initial_analysis = initialAnalysis(engine)
@@ -85,4 +94,4 @@ app.layout = Div(children=[
 ])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8050)
