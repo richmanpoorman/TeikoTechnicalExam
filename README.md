@@ -33,3 +33,7 @@ the different cell types, and it should be fine since the schema is also hard co
 The dashboard DOES process the information on its side (making the requests) but DOES NOT make the database; I did this, because the dashboard
 shouldn't be responsible for the database, but in the future, we may want to move the parts to an API, but this dashboard would be easier 
 to change and update with new information or data processing then it would be if it were an API (API would only really be needed if it were a public dashboard)
+
+## Notes: 
+
+I only really saw this on Sunday (a day after this was sent), so I am trying to get this in as soon as possible as I was actually busy on Sunday [So I really started on Monday], but I hope that this arrives on time
