@@ -2,7 +2,7 @@ from pandas import DataFrame
 import pandas as pd 
 from typing import TypedDict, Optional
 from sqlalchemy import create_engine, URL, text, Engine
-from InitialAnalysis import initialAnalysis, initial_data
+from InitialAnalysis import initialAnalysis
 
 from plotly.graph_objects import Figure, Box, Scatter
 
@@ -118,23 +118,5 @@ def signficanceTest(population_frequencies : PopulationFrequencies) -> DataFrame
         "z_statistic" : z_test_values, 
         "p_value" : p_values
     })
+
 ### TESTING
-database_name = 'cell_count.db'
-
-database_url = URL.create(
-    "sqlite", 
-    database=database_name
-)
-engine = create_engine(database_url, echo=True)
-population_frequencies = relativeFrequencies(engine, initial_data)
-
-print(population_frequencies)
-
-signficances = signficanceTest(population_frequencies) 
-
-print(signficances)
-
-figure = createFigures(population_frequencies) 
-
-figure.show()
-

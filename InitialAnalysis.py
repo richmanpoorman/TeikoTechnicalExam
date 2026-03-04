@@ -27,12 +27,3 @@ def initialAnalysis(database_engine : Engine) -> DataFrame:
         return analysisData
 
 ### TESTING
-
-database_url = URL.create(
-    "sqlite", 
-    database=database_name
-)
-engine = create_engine(database_url, echo=True)
-
-initial_data = initialAnalysis(engine)
-print(initial_data)

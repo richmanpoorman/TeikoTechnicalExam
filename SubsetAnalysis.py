@@ -14,7 +14,7 @@ def subsetAnalysis(database_engine : Engine) -> SubsetData:
     
     with database_engine.connect() as connection: 
         query = '''
-            SELECT S.sample, S.subject, S.project, S.sample_type, S.b_cell, S.cd8_t_cell, S.cd4_t_cell, S.nk_cell, S.monocyte, P.condition, P.age, P.sex, P.treatment, P.response 
+            SELECT S.sample, S.subject, S.project, S.b_cell, S.cd8_t_cell, S.cd4_t_cell, S.nk_cell, S.monocyte, P.age, P.sex, P.response 
             FROM Samples S, Subjects P
             WHERE S.time_from_treatment_start = 0 AND S.sample_type = 'PBMC' AND P.condition = 'melanoma' AND P.treatment = 'miraclib' AND S.subject = P.subject
         '''
@@ -48,33 +48,14 @@ def subsetAnalysis(database_engine : Engine) -> SubsetData:
             'samples_by_sex'      : by_sex
         }
 
+def melanomaMalesAvgBCellsTimeZero(database_engine : Engine) -> DataFrame:
+    with database_engine.connect() as connection: 
+        query = '''
+            SELECT AVG(S.b_cell)
+            FROM Samples S, Subjects P 
+            WHERE P.condition = 'melanoma' AND P.sex = 'M' AND S.time_from_treatment_start = 0 AND P.response = 'yes' AND S.subject = P.subject
+        '''
+
+        return pd.read_sql(text(query), connection) 
 
 ### TESTING
-database_name = 'cell_count.db'
-
-database_url = URL.create(
-    "sqlite", 
-    database=database_name
-)
-engine = create_engine(database_url, echo=True)
-
-subset_analysis = subsetAnalysis(engine)
-all_samples         = subset_analysis['all_samples']
-samples_by_project  = subset_analysis['samples_by_project']
-samples_by_response = subset_analysis['samples_by_response']
-samples_by_sex      = subset_analysis['samples_by_sex']
-
-print(all_samples)
-print(samples_by_response)
-print(samples_by_project)
-print(samples_by_sex)
-
-with engine.connect() as connection: 
-    query = '''
-        SELECT AVG(S.b_cell)
-        FROM Samples S, Subjects P 
-        WHERE P.condition = 'melanoma' AND P.sex = 'M' AND S.time_from_treatment_start = 0 AND S.subject = P.subject
-    '''
-
-    melanomaMalesAvgBCellsTimeZero = pd.read_sql(text(query), connection) 
-    print(melanomaMalesAvgBCellsTimeZero)
